@@ -33,6 +33,10 @@ class TextFileLoader:
         lines = open(filepath, encoding='utf-8').read().strip().split('\n')
         return [TextFileLoader.unicodeToAscii(line) for line in lines]
 
-
     def createDict(self):
-        pass
+        names_dict = dict()
+        for filename in self.filepaths:
+            category = filename.split('/')[-1].split('.')[0]
+            lines = TextFileLoader.readLinesIntoList(filename)
+            names_dict[category] = lines
+        return names_dict
