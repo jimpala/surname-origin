@@ -1,6 +1,8 @@
-import pytest
-
 import app
 
-def test_main():
-    assert app.main() == 0
+class TestApp:
+    def test_main_completes(self):
+        """
+        This test method checks that the main method runs to completion, returning exit code 0.
+        """
+        assert app.main() == 0
