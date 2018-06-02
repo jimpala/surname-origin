@@ -40,3 +40,23 @@ class TextFileLoader:
             lines = TextFileLoader.readLinesIntoList(filename)
             names_dict[category] = lines
         return names_dict
+
+def _letter_to_index(letter):
+    """This function takes a letter and returns an index corresponding to TextFileLoader.all_letters.
+
+    Args:
+        letter (str): Single character string, length one. Must be ASCII.
+
+    Returns:
+        int: Index corresponding to TextFileLoader.all_letters.
+
+    Raises:
+        ValueError: If `letter` is a string of other than length one.
+        TypeError: If `letter` is not `str` type.
+    """
+    if type(letter) != str:
+        raise TypeError('letter must be a string')
+    if len(letter) != 1:
+        raise ValueError('letter must be a string of length one')
+
+    return TextFileLoader.all_letters.find(letter)
