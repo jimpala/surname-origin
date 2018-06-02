@@ -3,6 +3,8 @@ import os
 import string
 import unicodedata
 
+import torch
+
 
 class TextFileLoader:
     """This class finds name text files in a given directory, and can then process them into a dict.
@@ -60,3 +62,17 @@ def _letter_to_index(letter):
         raise ValueError('letter must be a string of length one')
 
     return TextFileLoader.all_letters.find(letter)
+
+def _letter_to_tensor(letter):
+    index = _letter_to_index(letter)
+
+    tensor = torch.zeros(1, TextFileLoader.n_letters)
+    tensor[0][index] = 1
+
+    return tensor
+
+def word_to_tensor(line):
+    tensor = torch.zeros(len(line), 1, TextFileLoader.n_letters)
+    for i, letter in enumerate(line):
+        tensor[i][0][_letter_to_index(letter)] = 1
+    return tensor

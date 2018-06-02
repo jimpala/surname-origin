@@ -1,3 +1,5 @@
+import torch
+
 import utils
 import os
 from unittest import TestCase
@@ -36,3 +38,22 @@ class TestWordVectoriser(TestCase):
         assert utils._letter_to_index('a') == 0
         assert utils._letter_to_index(';') == 55
         assert utils._letter_to_index('F') == 31
+
+    def test_can_turn_letter_to_tensor(self):
+        """It can return a <1 x n_letters> one-hot PyTorch tensor corresponding to a given letter."""
+        tensor = utils._letter_to_tensor('c')
+        assert list(tensor.size()) == [1, 57]
+
+        dummy_tensor = torch.zeros(1, 57)
+        dummy_tensor[0][2] = 1
+        assert torch.equal(tensor, dummy_tensor)
+
+    def text_can_turn_line_into_tensor(self):
+        """It can return a <line_length x 1 x n_letters> tensor given a word string."""
+        tensor = utils.word_to_tensor('abcd')
+        assert list(tensor.size()) == [4, 1, 57]
+
+        dummy_tensor = torch.zeros(4, 1, 57)
+        for i in range(4):
+            dummy_tensor[i][0][i] = 1
+        assert torch.equal(tensor, dummy_tensor)
