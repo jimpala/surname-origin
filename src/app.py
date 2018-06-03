@@ -1,11 +1,16 @@
 import torch
 import torch.nn as nn
 
+import utils
+
+
 class RNN(nn.Module):
     def __init__(self, input_size, hidden_size, output_size):
         super().__init__()
 
+        self.input_size = input_size
         self.hidden_size = hidden_size
+        self.output_size = output_size
 
         self.input_to_hidden = nn.Linear(input_size + hidden_size, hidden_size)
         self.input_to_output = nn.Linear(input_size + hidden_size, output_size)
@@ -21,6 +26,11 @@ class RNN(nn.Module):
     def hidden_zeros(self):
         return torch.zeros(1, self.hidden_size)
 
+class ModelHandler:
+    def __init__(self, data, letters, n_hidden=128):
+        self.data = data
+        self.rnn = RNN(len(utils.TextFileLoader.all_letters), n_hidden, len(data.keys()))
+        self.letters = letters
 
 def main():
     return 0
