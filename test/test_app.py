@@ -1,6 +1,8 @@
 import app
 import torch
 import utils
+from unittest import TestCase
+from unittest.mock import patch
 
 class TestMain:
     def test_main_completes(self):
@@ -32,14 +34,21 @@ class TestRNN:
         hidden_zeros_result = nn.hidden_zeros()
         assert torch.zeros(1, hidden).equal(hidden_zeros_result)
 
-class TestModelHandler:
+class TestModelHandler(TestCase):
+
+    dummy_data = {'French': ['Jacques', 'Pierre'], 'English': ['Jack', 'Peter']}
+    categories = tuple(dummy_data.keys())
+    n_categories = len(categories)
+    names = dummy_data['French'] + dummy_data['English']
+
     def test_ModelHandler_can_load_model_and_data(self):
         """It takes data dict stores an RNN and language->names data dict."""
-        data = {'French': ['Jacques', 'Pierre'], 'English': ['Jack', 'Peter']}
+
         n_hidden = 100
-        handler = app.ModelHandler(data, utils.TextFileLoader.all_letters, n_hidden)
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, n_hidden)
 
         assert isinstance(handler.data, dict)
+        assert handler.categories == tuple(TestModelHandler.dummy_data.keys())
         assert isinstance(handler.rnn, app.RNN)
         assert isinstance(handler.letters, str)
 
@@ -47,3 +56,22 @@ class TestModelHandler:
         assert handler.rnn.hidden_size == n_hidden
         assert handler.rnn.output_size == len(handler.data.keys())
 
+    def test_ModelHandler_can_determine_most_likely_category(self):
+        """It has a helper function that can return the most likely category of an output, and its index."""
+        tensor = torch.tensor([[1.1, 2.7]])
+
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
+        results = handler._most_likely_category(tensor)
+        assert results[0] == 'English'
+        assert results[1] == 1
+
+    def test_ModelHandler_can_pick_random_training_sample(self):
+        """It has a helper function that can return a random training sample. Return should be that training
+        sample's category, name, input tensor representation and output representation.
+        """
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
+        result = handler._random_training_sample()
+        assert result[0] in TestModelHandler.categories
+        assert result[1] in TestModelHandler.names
+        assert tuple(result[2].size()) == (1, TestModelHandler.n_categories)
+        assert tuple(result[3].size())[1] == 1 and tuple(result[3].size())[2] == len(handler.letters)
