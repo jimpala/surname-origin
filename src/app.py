@@ -47,9 +47,12 @@ class ModelHandler:
         category = self.categories[random.randint(0, len(self.categories) - 1)]
         name = self.data[category][random.randint(0, len(self.data[category]) - 1)]
         category_tensor = torch.zeros(1, self.n_categories)
-        category_tensor[self.categories.index(category)] = 1
+        category_tensor[0][self.categories.index(category)] = 1
         name_tensor = utils.word_to_tensor(name)
         return category, name, category_tensor, name_tensor
+
+    def _train_iteration(self, category_tensor, line_tensor, learning_rate=0.005):
+        pass
 
 
 def main():

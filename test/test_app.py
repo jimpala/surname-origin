@@ -75,3 +75,9 @@ class TestModelHandler(TestCase):
         assert result[1] in TestModelHandler.names
         assert tuple(result[2].size()) == (1, TestModelHandler.n_categories)
         assert tuple(result[3].size())[1] == 1 and tuple(result[3].size())[2] == len(handler.letters)
+
+    def test_ModelHandler_train_iteration(self):
+        """It has a training iteration method that can take an output and input (category and name) tensor,
+        then use them to perform backprop, updating the RNN parameters with gradient descent, and then returning
+        the output tensor and loss.
+        """
