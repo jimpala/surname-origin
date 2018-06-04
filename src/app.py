@@ -1,3 +1,4 @@
+import os
 import random
 
 import torch
@@ -77,6 +78,8 @@ class ModelHandler:
             losses = list()
         for i in range(n_iter):
             _, iter_loss = self._train_iteration(learning_rate=learning_rate)
+            if i % 100 == 0:
+                print("Completed training step {:d}".format(i+1))
             if output_losses:
                 losses.append(iter_loss)
         if output_losses:
@@ -84,6 +87,16 @@ class ModelHandler:
 
 
 def main():
+    loader = utils.TextFileLoader(os.path.join('data', 'names'))
+    data = loader.createDict()
+
+    handler = ModelHandler(data, loader.all_letters, n_hidden=128)
+    losses = handler.train(n_iter=100, learning_rate=0.005)
+
+    # import matplotlib.pyplot as plt
+    # plt.plot(x=[i[0] for i in losses], y=[j[1] for j in losses])
+    # plt.show()
+
     return 0
 
 if __name__ == '__main__':

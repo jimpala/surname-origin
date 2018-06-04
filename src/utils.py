@@ -20,7 +20,6 @@ class TextFileLoader:
 
     def __init__(self, text_files_dir):
         self.filepaths = glob.glob(os.path.join(text_files_dir, '*.txt'))
-        print(self.filepaths)
 
     @staticmethod
     def unicodeToAscii(unicode):
