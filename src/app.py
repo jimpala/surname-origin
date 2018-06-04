@@ -46,13 +46,31 @@ class ModelHandler:
     def _random_training_sample(self):
         category = self.categories[random.randint(0, len(self.categories) - 1)]
         name = self.data[category][random.randint(0, len(self.data[category]) - 1)]
-        category_tensor = torch.zeros(1, self.n_categories)
-        category_tensor[0][self.categories.index(category)] = 1
+        # Category tensor is 1D, with the index of the true class.
+        category_tensor = torch.tensor([self.categories.index(category)], dtype=torch.long)
         name_tensor = utils.word_to_tensor(name)
         return category, name, category_tensor, name_tensor
 
-    def _train_iteration(self, category_tensor, line_tensor, learning_rate=0.005):
-        pass
+    def _train_iteration(self, learning_rate=0.005):
+        hidden = self.rnn.hidden_zeros()
+        self.rnn.zero_grad()
+
+        # Randomly select a category and name.
+        _, _, category_tensor, name_tensor = self._random_training_sample()
+
+        # Forward pass.
+        for i in range(name_tensor.size()[0]):
+            output, hidden = self.rnn(name_tensor[i][:][:], hidden)
+
+        # Backward pass.
+        loss = self.criterion(output, category_tensor)
+        loss.backward()
+
+        # Update parameters.
+        for p in self.rnn.parameters():
+            p.data.add_(-learning_rate * p.grad)
+
+        return output, loss.item()
 
 
 def main():

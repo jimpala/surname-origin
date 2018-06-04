@@ -1,3 +1,5 @@
+from copy import deepcopy
+
 import app
 import torch
 import utils
@@ -73,7 +75,7 @@ class TestModelHandler(TestCase):
         result = handler._random_training_sample()
         assert result[0] in TestModelHandler.categories
         assert result[1] in TestModelHandler.names
-        assert tuple(result[2].size()) == (1, TestModelHandler.n_categories)
+        assert tuple(result[2].size()) == (1,)
         assert tuple(result[3].size())[1] == 1 and tuple(result[3].size())[2] == len(handler.letters)
 
     def test_ModelHandler_train_iteration(self):
@@ -81,3 +83,6 @@ class TestModelHandler(TestCase):
         then use them to perform backprop, updating the RNN parameters with gradient descent, and then returning
         the output tensor and loss.
         """
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
+        result = handler._train_iteration(learning_rate=0.1)
+        assert result[0].size() == (1, TestModelHandler.n_categories)
