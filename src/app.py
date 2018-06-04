@@ -72,6 +72,16 @@ class ModelHandler:
 
         return output, loss.item()
 
+    def train(self, n_iter=1, learning_rate=0.05, output_losses=True):
+        if output_losses:
+            losses = list()
+        for i in range(n_iter):
+            _, iter_loss = self._train_iteration(learning_rate=learning_rate)
+            if output_losses:
+                losses.append(iter_loss)
+        if output_losses:
+            return list(enumerate(losses, start=1))
+
 
 def main():
     return 0
