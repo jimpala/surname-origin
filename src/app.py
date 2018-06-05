@@ -1,3 +1,4 @@
+import os
 import random
 
 import torch
@@ -113,6 +114,15 @@ class ModelHandler:
 
 
 def main():
+    loader = utils.TextFileLoader(os.path.join('data', 'names'))
+    data = loader.createDict()
+
+    handler = ModelHandler(data, loader.all_letters, n_hidden=128)
+
+    handler.train(n_iter=10000, learning_rate=0.005)
+
+    handler.predict('Konstantinidis', top_predictions=3)
+
     return 0
 
 if __name__ == '__main__':
