@@ -81,6 +81,7 @@ class ModelHandler:
                 print("Completed training iteration {:d}".format(i))
             if output_losses:
                 losses.append(iter_loss)
+        print('Training completed!')
         if output_losses:
             return list(enumerate(losses, start=1))
 
@@ -99,6 +100,8 @@ class ModelHandler:
             # Get top N categories
             topv, topi = output.topk(top_predictions, 1, True)
             predictions = []
+
+            print('Top {:d} origin predictions for {}:'.format(top_predictions, name))
 
             for i in range(top_predictions):
                 value = topv[0][i].item()

@@ -2,7 +2,7 @@ import glob
 import os
 import string
 import unicodedata
-
+from collections import OrderedDict
 import torch
 
 
@@ -35,7 +35,7 @@ class TextFileLoader:
         return [TextFileLoader.unicodeToAscii(line) for line in lines]
 
     def createDict(self):
-        names_dict = dict()
+        names_dict = OrderedDict()
         for filename in self.filepaths:
             category = filename.split('/')[-1].split('.')[0]
             lines = TextFileLoader.readLinesIntoList(filename)
