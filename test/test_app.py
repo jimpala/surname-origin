@@ -100,3 +100,16 @@ class TestModelHandler(TestCase):
         name = utils.word_to_tensor('Steve')
         result = handler._evaluate(name)
         assert tuple(result.size()) == (1, TestModelHandler.n_categories)
+
+    def test_ModelHandler_prediction(self):
+        """It has a prediction method that can evaluate the output of the RNN for a given name, then prints
+        the specified top prediction values and categories, and returns the top predictions as a list of
+        (value, category) tuples.
+        """
+        predictions = 2
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
+        result = handler.predict('Steve', top_predictions=predictions)
+        assert len(result) == predictions
+        for r in result:
+            assert type(r[0]) == float
+            assert r[1] in handler.categories

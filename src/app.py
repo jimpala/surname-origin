@@ -92,6 +92,22 @@ class ModelHandler:
 
         return output
 
+    def predict(self, name, top_predictions=1):
+        with torch.no_grad():
+            output = self._evaluate(utils.word_to_tensor(name))
+
+            # Get top N categories
+            topv, topi = output.topk(top_predictions, 1, True)
+            predictions = []
+
+            for i in range(top_predictions):
+                value = topv[0][i].item()
+                category_index = topi[0][i].item()
+                print('(%.2f) %s' % (value, self.categories[category_index]))
+                predictions.append([value, self.categories[category_index]])
+
+        return predictions
+
 
 def main():
     return 0
