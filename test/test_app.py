@@ -85,11 +85,18 @@ class TestModelHandler(TestCase):
         """
         handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
         result = handler._train_iteration(learning_rate=0.1)
-        assert result[0].size() == (1, TestModelHandler.n_categories)
+        assert tuple(result[0].size()) == (1, TestModelHandler.n_categories)
 
-    def testModelHandler_training(self):
+    def test_ModelHandler_training(self):
         """It has a train method that can continually perform backprop and update the parameters of the model."""
         iterations = 4
         handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
         result = handler.train(n_iter=iterations, learning_rate=0.1, output_losses=True)
         assert len(result) == iterations
+
+    def test_ModelHandler_evaluation(self):
+        """It has an evaluation method that can return the output of the RNN for a given name tensor."""
+        handler = app.ModelHandler(TestModelHandler.dummy_data, utils.TextFileLoader.all_letters, 100)
+        name = utils.word_to_tensor('Steve')
+        result = handler._evaluate(name)
+        assert tuple(result.size()) == (1, TestModelHandler.n_categories)

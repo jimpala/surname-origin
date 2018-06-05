@@ -84,6 +84,14 @@ class ModelHandler:
         if output_losses:
             return list(enumerate(losses, start=1))
 
+    def _evaluate(self, name_tensor):
+        hidden = self.rnn.hidden_zeros()
+
+        for i in range(name_tensor.size()[0]):
+            output, hidden = self.rnn(name_tensor[i][:][:], hidden)
+
+        return output
+
 
 def main():
     return 0
