@@ -3,7 +3,7 @@ import torch
 import utils
 import os
 from unittest import TestCase
-from unittest import mock
+
 
 class TestTextFileLoader:
     def test_gets_text_filepaths(self):
@@ -31,6 +31,7 @@ class TestTextFileLoader:
         test_dict = loader.createDict()
         assert test_dict['French']
         assert len(test_dict['French']) == 277
+
 
 class TestWordVectoriser(TestCase):
     def test_can_turn_letter_to_index(self):
